@@ -1,20 +1,29 @@
-import React, {Fragment, useState, useEffect} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {useParams, Link} from 'react-router-dom';
 import {Row, Col, Image, ListGroup, Card, Button} from 'react-bootstrap';
 import Rating from '../components/Rating';
-import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
+import { listProductDetails } from '../actions/productActions';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
+
 // import products from '../data/products';
 
 const ProductScreen = () => {
     const params = useParams();
-    const [product, setProduct] = useState({});
+    const dispatch = useDispatch();
+   
+    const {product, loading, error} = useSelector(state => state.productDetails);
     useEffect(() => {
-        const fetchProduct = async () => {
-            const res = await axios.get(`/api/products/${params.id}`);
-            setProduct(res.data);
-        };
-        fetchProduct();
-    }, [])
+       dispatch(listProductDetails(params.id))
+    }, [dispatch, params]);
+
+    if(loading){
+        return <Loader />
+    }
+    if(!loading && error){
+        return <Message variant="danger">{error}</Message>
+    }
     
   return (
     <Fragment>

@@ -1,19 +1,25 @@
 import React, {Fragment, useState, useEffect} from 'react';
 import {Row, Col} from 'react-bootstrap';
 import Product from '../components/Product';
-import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
+import { listProducts } from '../actions/productActions';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 // import products from '../data/products';
 
 const HomeScreen = () => {
-  const [products, setProducts] = useState([]);
-
+  const {products, loading, error} = useSelector(state => state.productList);
+  const dispatch = useDispatch();
   useEffect(()=> {
-    const fetchProducts = async () => {
-      const res = await axios.get('/api/products');
-      setProducts(res.data);
-    };
-    fetchProducts();
-  }, [])
+    dispatch(listProducts());
+  }, [dispatch])
+  if(loading){
+    return <Loader />
+  }
+  
+  if(!loading && error){
+    return <Message variant='danger' >{error}</Message>
+  }
   return (
     <Fragment>
         <h1>Latest Products</h1>
