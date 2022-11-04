@@ -49,3 +49,62 @@ export const logout = () => dispatch => {
     dispatch({type: USER_LOGOUT});
     localStorage.removeItem('userInfo');
 }
+
+export const register = (name, email, password) => async (dispatch) => {
+    dispatch({type: USER_REGISTER_REQUEST});
+    try{
+        const config = {
+            headers: {'Content-Type': 'application/json'},
+        }
+        const res = await axios.post('/api/users',{name, email, password}, config);
+        dispatch({type: USER_REGISTER_SUCCESS, payload: res.data});
+        // dispatch({type: USER_LOGIN_SUCCESS, payload: res.data});
+        console.log(res.data);
+        localStorage.setItem('userInfo', JSON.stringify(res.data))
+    }catch(error){
+        dispatch({type:USER_REGISTER_FAIL, payload: error.response ? error.response.data.message : error.message});
+        console.log(error.response.data);
+    }
+
+}
+
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    dispatch({type: USER_DETAILS_REQUEST});
+    const { userInfo } =getState().userLogin;
+    try{
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`
+            },
+        }
+        const res = await axios.get(`/api/users/${id}`, config);
+        dispatch({type: USER_DETAILS_SUCCESS, payload: res.data});
+       
+    }catch(error){
+        dispatch({type:USER_DETAILS_FAIL, payload: error.response ? error.response.data.message : error.message});
+        console.log(error.response.data);
+    }
+
+}
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+    dispatch({type: USER_UPDATE_PROFILE_REQUEST});
+    const { userInfo } =getState().userLogin;
+    try{
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`
+            },
+        }
+        const res = await axios.put(`/api/users/profile`,user, config);
+        dispatch({type: USER_UPDATE_PROFILE_SUCCESS, payload: res.data});
+       
+    }catch(error){
+        dispatch({type:USER_UPDATE_PROFILE_FAIL, payload: error.response ? error.response.data.message : error.message});
+        console.log(error.response.data);
+    }
+
+}

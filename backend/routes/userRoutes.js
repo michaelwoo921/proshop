@@ -8,6 +8,7 @@ router.route('/login')
 .post(userCtrl.authUser);
 
 router.get('/profile',protect, userCtrl.getUserProfile);
+router.put('/profile',protect, userCtrl.updateUserProfile);
 
 router.post('/', userCtrl.registerUser);
 
