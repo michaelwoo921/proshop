@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom'
 
 import {Form, Button, Row, Col} from 'react-bootstrap';
@@ -22,6 +22,13 @@ const RegisterScreen = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
+    useEffect(() => {
+        if (userInfo) {
+          navigate(redirect)
+        }
+      }, [navigate, userInfo, redirect])
+
+
     const submitHandler =e => {
         e.preventDefault();
         // dispatch register
@@ -30,20 +37,14 @@ const RegisterScreen = () => {
         } else {
             setMessage('Passwords do not match');
         }
-        
-
-
     }
-    if(loading){
-        return <Loader />
-    }
-
-    if(!loading && userInfo){
-        return <Navigate to={`/${redirect}`} />;
-    }
+   
   return (
     <FormContainer>
         <h1>Register</h1>
+        {message && <Message variant='danger'>{message}</Message>}
+      {error && <Message variant='danger'>{error}</Message>}
+      {loading && <Loader />}
         {error && <Message variant='danger'>{error}</Message>}
         {message && <Message variant='danger'>{message}</Message>}
         <Form onSubmit={submitHandler}>

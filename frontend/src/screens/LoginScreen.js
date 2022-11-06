@@ -19,26 +19,27 @@ const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    useEffect(() => {
+        if (userInfo) {
+          navigate(redirect)
+        }
+      }, [navigate, userInfo, redirect])
+    
+
+
     const submitHandler =e => {
         e.preventDefault();
         dispatch(login(email, password));
 
 
     }
-    if(loading){
-        return <Loader />
-    }
-    if(!loading && error){
-        return (
-            <Message>{error}</Message>
-        )
-    }
-    if(!loading && userInfo){
-        return <Navigate to={`/${redirect}`} />;
-    }
+
+
   return (
     <FormContainer>
         <h1>Sign In</h1>
+        {error && <Message variant='danger'>{error}</Message>}
+      {loading && <Loader />}
         <Form onSubmit={submitHandler}>
         <Form.Group  controlId="email">
             <Form.Label>Email address</Form.Label>

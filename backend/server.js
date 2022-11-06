@@ -23,10 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
-app.get('/', (req, res) => {
-    res.send('API is running...');
-    
-})
+
 // routes
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
