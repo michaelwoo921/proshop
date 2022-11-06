@@ -1,10 +1,10 @@
 import React, { useEffect, Fragment, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap'
 import { useDispatch, useSelector,  } from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader';
-import { getOrderDetails, payOrder, deliverOrder } from '../actions/orderActions';
+import { getOrderDetails, deliverOrder } from '../actions/orderActions';
 import axios from 'axios';
 import {PayPalScriptProvider, PayPalButtons} from '@paypal/react-paypal-js';
 import {
@@ -203,14 +203,25 @@ const deliverHandler = () => {
                                             successPaymentHandler(details);
                                         })
                                     }}
-
-                                    
-                            
                                      />
-                                    
                                 )}
                             </ListGroup.Item>
                         )}  
+                          {loadingDeliver && <Loader />}
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn btn-block'
+                      onClick={deliverHandler}
+                    >
+                      Mark As Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )}
                        
             
                     </ListGroup>
